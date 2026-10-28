@@ -11,31 +11,41 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: '24'
           cache: npm
       - run: npm ci --no-audit --no-fund
       - run: npm test
       - name: Package for Apple Silicon
-        run: npx electron-builder --mac zip --arm64 --publish never
+        run: npx electron-builder --mac zip --arm64 --publish never --config.mac.identity=-
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - name: Verify signed app and launch on macOS
+        run: |
+          codesign --verify --deep --strict --verbose=2 dist/mac-arm64/Sunnie.app
+          codesign --display --verbose=2 dist/mac-arm64/Sunnie.app
+          dist/mac-arm64/Sunnie.app/Contents/MacOS/Sunnie --smoke-test > smoke.log 2>&1
+          cat smoke.log
+          grep -q SUNNIE_SMOKE_OK smoke.log
+          mkdir -p /tmp/sunnie-unpacked
+          ditto -x -k dist/Sunnie-1.0.1-arm64-mac.zip /tmp/sunnie-unpacked
+          codesign --verify --deep --strict --verbose=2 /tmp/sunnie-unpacked/Sunnie.app
       - name: Publish downloadable application
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          shasum -a 256 dist/Sunnie-1.0.0-arm64-mac.zip > dist/SHA256SUMS.txt
+          shasum -a 256 dist/Sunnie-1.0.1-arm64-mac.zip > dist/SHA256SUMS.txt
           cat > release-notes.md <<'NOTES'
           ## M1 / Apple Silicon Mac 安装
-          下载 Assets 中的 Sunnie-1.0.0-arm64-mac.zip，双击解压，将 Sunnie.app 拖入「应用程序」后打开。
+          下载 Assets 中的 Sunnie-1.0.1-arm64-mac.zip，双击解压，将 Sunnie.app 拖入「应用程序」后打开。
           需要 macOS 12 或更新版本，无需 Node.js 或终端。
-          应用未经 Apple 开发者签名和公证，首次启动可能被阻止；请查看「系统设置 → 隐私与安全性」是否提供「仍要打开」。若提示损坏，请反馈具体提示，不要关闭系统安全功能。
+          已验证本地 ad-hoc 签名和 Mac 构建机启动，但未经 Apple 开发者签名和公证，首次启动可能被阻止；请查看「系统设置 → 隐私与安全性」是否提供「仍要打开」。若提示损坏，请反馈具体提示，不要关闭系统安全功能。
           Mac 桌面交互尚需真机验证。支持分类、四种状态、截止日期、本地保存和拖动排序，尚无日历同步。
           NOTES
-          if gh release view v1.0.0 >/dev/null 2>&1; then
-            gh release upload v1.0.0 dist/Sunnie-1.0.0-arm64-mac.zip dist/SHA256SUMS.txt --clobber
+          if gh release view v1.0.1 >/dev/null 2>&1; then
+            gh release upload v1.0.1 dist/Sunnie-1.0.1-arm64-mac.zip dist/SHA256SUMS.txt --clobber
           else
-            gh release create v1.0.0 dist/Sunnie-1.0.0-arm64-mac.zip dist/SHA256SUMS.txt --target "$GITHUB_SHA" --title 'Sunnie 1.0.0 — Apple Silicon Mac' --notes-file release-notes.md
+            gh release create v1.0.1 dist/Sunnie-1.0.1-arm64-mac.zip dist/SHA256SUMS.txt --target "$GITHUB_SHA" --title 'Sunnie 1.0.1 — Apple Silicon Mac' --notes-file release-notes.md
           fi

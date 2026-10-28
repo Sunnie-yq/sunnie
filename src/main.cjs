@@ -21,6 +21,19 @@ app.whenReady().then(() => {
   win.setAlwaysOnTop(true, 'floating');
   win.setVisibleOnAllWorkspaces(true, {visibleOnFullScreen:true});
   resize(false);
+  if (process.argv.includes('--smoke-test')) {
+    const timer = setTimeout(() => { console.error('SMOKE timeout'); app.exit(1); }, 20000);
+    win.webContents.once('did-finish-load', async () => {
+      try {
+        const ready = await win.webContents.executeJavaScript("Boolean(document.querySelector('#orb') && document.querySelector('#title') && typeof window.desktop?.expand === 'function')");
+        if (!ready) throw new Error('Renderer or preload did not initialize');
+        console.log('SUNNIE_SMOKE_OK');
+        clearTimeout(timer);
+        app.exit(0);
+      } catch (error) { console.error(error); app.exit(1); }
+    });
+    win.webContents.once('did-fail-load', () => app.exit(1));
+  }
   win.loadFile(path.join(__dirname,'index.html'));
   win.on('move', () => { clearTimeout(positionTimer); positionTimer = setTimeout(() => { const {x,y} = win.getBounds(); fs.writeFile(positionFile(), JSON.stringify({x,y}), () => {}); }, 250); });
   win.webContents.setWindowOpenHandler(() => ({action:'deny'}));

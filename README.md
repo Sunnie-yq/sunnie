@@ -4,9 +4,9 @@ A small, quiet desktop todo companion, built with Electron and plain HTML/CSS/Ja
 
 ## Download for Apple Silicon (M1/M2/M3/M4)
 
-Download [Sunnie for Apple Silicon](https://github.com/Sunnie-yq/sunnie/releases/download/v1.0.0/Sunnie-1.0.0-arm64-mac.zip) (macOS 12 or newer). Double-click the ZIP, drag `Sunnie.app` into Applications, then open it. Node.js and Terminal are not needed for this packaged app.
+Download [Sunnie for Apple Silicon](https://github.com/Sunnie-yq/sunnie/releases/download/v1.0.1/Sunnie-1.0.1-arm64-mac.zip) (macOS 12 or newer). Double-click the ZIP, drag `Sunnie.app` into Applications, then open it. Node.js and Terminal are not needed for this packaged app.
 
-This initial build is unsigned and not notarized, and has not been tested on a physical Mac. macOS may block first launch; inspect the message in System Settings → Privacy & Security. If it offers Open Anyway for Sunnie, use it only if you trust this download. If macOS reports that the app is damaged or cannot run, report the exact message; do not disable system security.
+This build uses ad-hoc signing, verified after ZIP extraction, and a packaged-app startup check on a macOS runner. It has no Developer ID signature or Apple notarization, and desktop behavior has not been tested on a physical Mac. macOS may block first launch; inspect the message in System Settings → Privacy & Security. If it offers Open Anyway for Sunnie, use it only if you trust this download. If macOS reports that the app is damaged or cannot run, report the exact message; do not disable system security.
 
 ## Run on macOS
 
