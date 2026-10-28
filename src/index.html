@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:"><title>Sunnie — a little room for your day</title><link rel="stylesheet" href="style.css"></head>
+<body><main id="widget">
+<button id="orb" aria-label="Open Sunnie tasks" title="Hover to open · drag to move"><span>✳</span><small id="orb-count">0</small></button>
+<section id="panel" aria-label="Todo list" hidden>
+<header id="handle"><div class="brand"><span class="sun">✳</span> sunnie<span class="badge">YOUR DAILY SPACE</span></div><button id="quit" title="Quit Sunnie" aria-label="Quit Sunnie">×</button></header>
+<div class="intro"><div class="eyebrow" id="today"></div><h1>A little more <em>headspace.</em></h1><p>One thing at a time. You’ve got this.</p></div>
+<nav aria-label="Task status" id="tabs"></nav>
+<div class="list-top"><span id="list-caption">YOUR TO-DOS</span><span id="task-count"></span></div>
+<div id="groups" aria-live="polite"></div>
+<footer><form id="add-form"><div class="input-row"><span>＋</span><input id="title" maxlength="500" placeholder="Add new todo" aria-label="Add new todo" autocomplete="off" required><button class="add" title="Add task" aria-label="Add task">↵</button></div><div class="options"><select id="category" aria-label="New task category"><option value="work">● Work</option><option value="life">● Life</option><option value="study">● Study</option><option value="else">● Else</option></select><label class="date-label">Due <input id="due" type="date" aria-label="New task due date"></label></div></form><div class="footnote"><span class="live-dot"></span> Saved on this device<span class="drag-hint">⠿ drag the top to move</span></div><p id="error" role="alert" hidden></p></footer>
+</section></main><script type="module" src="app.mjs"></script></body></html>
