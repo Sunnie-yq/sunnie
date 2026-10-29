@@ -1,4 +1,4 @@
-# Sunnie
+# Todolist
 
 A small, quiet desktop todo companion, built with Electron and plain HTML/CSS/JavaScript. No account, server, or external fonts are required.
 
